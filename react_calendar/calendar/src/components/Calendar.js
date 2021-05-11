@@ -9,6 +9,7 @@ class Calendar extends Component {
     this.state = {
       calendarEvents: [],
       selectedDate: null,
+      currentMonthDate: props.date,
     };
   }
 
@@ -50,28 +51,50 @@ class Calendar extends Component {
     this.getCalendarBoxes();
   };
 
+  nextMonth = () => {
+    this.setState((state) => ({
+      currentMonthDate: new Date(
+        state.currentMonthDate.getFullYear(),
+        state.currentMonthDate.getMonth() + 1,
+        1
+      ),
+    }));
+  };
+
+  prevMonth = () => {
+    this.setState((state) => ({
+      currentMonthDate: new Date(
+        state.currentMonthDate.getFullYear(),
+        state.currentMonthDate.getMonth() - 1,
+        1
+      ),
+    }));
+  };
+
   getDatesForPage = () => {
-    let now = new Date();
-    let thisMonth = now.getMonth();
-    let thisYear = now.getFullYear();
-    let prevDaysInMonth = new Date(thisYear, thisMonth, 0).getDate();
-    let daysInMonth = new Date(thisYear, thisMonth + 1, 0).getDate();
-    let monthStartDay = new Date(thisYear, thisMonth, 1).getDay();
-    let monthEndDay = new Date(thisYear, thisMonth, daysInMonth).getDay();
+    let now = this.state.currentMonthDate;
     let days = [];
+    if (now != null) {
+      let thisMonth = now.getMonth();
+      let thisYear = now.getFullYear();
+      let prevDaysInMonth = new Date(thisYear, thisMonth, 0).getDate();
+      let daysInMonth = new Date(thisYear, thisMonth + 1, 0).getDate();
+      let monthStartDay = new Date(thisYear, thisMonth, 1).getDay();
+      let monthEndDay = new Date(thisYear, thisMonth, daysInMonth).getDay();
 
-    // Add relevant previous month's days
-    for (let i = prevDaysInMonth - monthStartDay + 1; i <= prevDaysInMonth; i++) {
-      days.push(new Date(thisYear, thisMonth - 1, i));
-    }
+      // Add relevant previous month's days
+      for (let i = prevDaysInMonth - monthStartDay + 1; i <= prevDaysInMonth; i++) {
+        days.push(new Date(thisYear, thisMonth - 1, i));
+      }
 
-    // Add current month's days
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(thisYear, thisMonth, i));
-    }
+      // Add current month's days
+      for (let i = 1; i <= daysInMonth; i++) {
+        days.push(new Date(thisYear, thisMonth, i));
+      }
 
-    for (let i = 1; i < 7 - monthEndDay; i++) {
-      days.push(new Date(thisYear, thisMonth + 1, i));
+      for (let i = 1; i < 7 - monthEndDay; i++) {
+        days.push(new Date(thisYear, thisMonth + 1, i));
+      }
     }
 
     return days;
@@ -112,11 +135,22 @@ class Calendar extends Component {
     let rows = [...Array(dates.length / 7).keys()];
     let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let start = -1;
+    let monthText = this.state.currentMonthDate.toLocaleString("default", {
+      month: "long",
+      year: "numeric",
+    });
     return (
       <div>
         <h1>Calendar</h1>
+        <h2>{monthText}</h2>
+        <button type="button" class="btn btn-primary" onClick={this.nextMonth}>
+          Next Month
+        </button>
         <button type="button" class="btn btn-secondary" onClick={this.deleteEvents}>
           Delete Events
+        </button>
+        <button type="button" class="btn btn-primary" onClick={this.prevMonth}>
+          Previous Month
         </button>
         <EventForm createEvent={this.createEvent} />
         <div class="row">
