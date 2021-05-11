@@ -41,7 +41,12 @@ class Calendar extends Component {
       title: title,
       date: this.state.selectedDate,
     };
-    axios.post("/api/calendar", data).catch((err) => console.log(err));
+    axios.post("/api/calendar/create", data).catch((err) => console.log(err));
+    this.getCalendarBoxes();
+  };
+
+  deleteEvents = () => {
+    axios.post("/api/calendar/delete").catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
@@ -110,6 +115,9 @@ class Calendar extends Component {
     return (
       <div>
         <h1>Calendar</h1>
+        <button type="button" class="btn btn-secondary" onClick={this.deleteEvents}>
+          Delete Events
+        </button>
         <EventForm createEvent={this.createEvent} />
         <div class="row">
           {days.map((d) => (
