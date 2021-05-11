@@ -42,6 +42,7 @@ class Calendar extends Component {
       date: this.state.selectedDate,
     };
     axios.post("/api/calendar", data).catch((err) => console.log(err));
+    this.getCalendarBoxes();
   };
 
   getDatesForPage = () => {
@@ -73,20 +74,21 @@ class Calendar extends Component {
 
   mapEventsToDates = (dates) => {
     let dateEvents = new Map();
+    for (let i = 0; i < dates.length; i++) {
+      dateEvents.set(dates[i], []);
+    }
+
     if (this.state.calendarEvents == null || this.state.calendarEvents.titles == null) {
       return dateEvents;
     } else {
-      for (let i = 0; i < dates.length; i++) {
-        dateEvents.set(dates[i], []);
-      }
-
       for (let i = 0; i < this.state.calendarEvents.titles.length; i++) {
-        for (let j = 0; j < dates.length; i++) {
+        for (let j = 0; j < dates.length; j++) {
           if (this.isSameDay(dates[j], this.state.calendarEvents.dates[i])) {
-            dateEvents.get(dates[j]).push(this.state.calendarEvents.titles[j]);
+            dateEvents.get(dates[j]).push(this.state.calendarEvents.titles[i]);
           }
         }
       }
+      return dateEvents;
     }
   };
 
@@ -101,7 +103,6 @@ class Calendar extends Component {
   render() {
     let dates = this.getDatesForPage();
     let eventMap = this.mapEventsToDates(dates);
-
     let dayNumbers = [...Array(7).keys()];
     let rows = [...Array(dates.length / 7).keys()];
     let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -119,7 +120,13 @@ class Calendar extends Component {
           <div class="row flex-nowrap">
             {dayNumbers.map((n) => {
               ++start;
-              return <CalendarBox date={dates[start]} clickHandler={this.clickDay} events={[]} />;
+              return (
+                <CalendarBox
+                  date={dates[start]}
+                  clickHandler={this.clickDay}
+                  events={eventMap.get(dates[start])}
+                />
+              );
             })}
           </div>
         ))}

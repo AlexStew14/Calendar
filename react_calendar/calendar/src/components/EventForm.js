@@ -20,8 +20,6 @@ class EventForm extends Component {
     event.preventDefault();
   }
 
-  onOpen(date) {}
-
   render() {
     return (
       <div>
@@ -47,7 +45,12 @@ class EventForm extends Component {
                 <form action="#">
                   <label>
                     Title:
-                    <input type="text" value={this.state.title} onChange={this.handleChange} />
+                    <input
+                      action="#"
+                      type="text"
+                      value={this.state.title}
+                      onChange={this.handleChange}
+                    />
                   </label>
                 </form>
               </div>
