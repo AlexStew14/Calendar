@@ -10,6 +10,7 @@ class Calendar extends Component {
       calendarEvents: [],
       selectedDate: null,
       currentMonthDate: props.date,
+      showEventForm: false,
     };
   }
 
@@ -34,7 +35,11 @@ class Calendar extends Component {
   };
 
   clickDay = (e, date) => {
-    this.setState({ selectedDate: date });
+    this.setState({ selectedDate: date, showEventForm: true });
+  };
+
+  closeEventForm = () => {
+    this.setState({ showEventForm: false });
   };
 
   createEvent = (title) => {
@@ -143,16 +148,23 @@ class Calendar extends Component {
       <div>
         <h1>Calendar</h1>
         <h2>{monthText}</h2>
-        <button type="button" class="btn btn-primary" onClick={this.nextMonth}>
-          Next Month
+        <button type="button" class="btn btn-primary" onClick={this.prevMonth}>
+          Previous Month
         </button>
         <button type="button" class="btn btn-secondary" onClick={this.deleteEvents}>
           Delete Events
         </button>
-        <button type="button" class="btn btn-primary" onClick={this.prevMonth}>
-          Previous Month
+        <button type="button" class="btn btn-primary" onClick={this.nextMonth}>
+          Next Month
         </button>
-        <EventForm createEvent={this.createEvent} />
+
+        <EventForm
+          createEvent={this.createEvent}
+          show={this.state.showEventForm}
+          handleShow={this.clickDay}
+          handleClose={this.closeEventForm}
+        />
+
         <div class="row">
           {days.map((d) => (
             <div class="col">{d}</div>

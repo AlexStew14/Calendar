@@ -1,79 +1,57 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Modal, Button, Form } from "react-bootstrap";
 
 class EventForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: "" };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {
+      title: "",
+    };
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     this.setState({ title: event.target.value });
-  }
+  };
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
+    event.preventDefault();
     this.props.createEvent(this.state.title);
     this.setState({ title: "" });
-    event.preventDefault();
-  }
+    this.props.handleClose();
+  };
 
   render() {
     return (
       <div>
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  Create Event
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form action="#">
-                  <label>
-                    Title:
-                    <input
-                      action="#"
-                      type="text"
-                      value={this.state.title}
-                      onChange={this.handleChange}
-                    />
-                  </label>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                  Close
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  onClick={this.handleSubmit}
-                  data-toggle="modal"
-                  data-target="#exampleModal"
-                >
-                  Save changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Modal show={this.props.show} onHide={this.props.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Modal Heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group controlId="eventTitle">
+                <Form.Label>Event title</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={this.state.title}
+                  placeholder="Enter event title"
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.props.handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit">
+              Save changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
 }
-
 export default EventForm;
