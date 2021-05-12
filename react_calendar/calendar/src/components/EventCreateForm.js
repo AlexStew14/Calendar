@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 
-class EventForm extends Component {
+class EventCreateForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +44,7 @@ class EventForm extends Component {
             <Button variant="secondary" onClick={this.props.handleClose}>
               Close
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
               Save changes
             </Button>
           </Modal.Footer>
@@ -54,4 +53,4 @@ class EventForm extends Component {
     );
   }
 }
-export default EventForm;
+export default EventCreateForm;

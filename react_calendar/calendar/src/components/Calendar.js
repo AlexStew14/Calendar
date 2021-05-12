@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CalendarBox from "./CalendarBox";
-import EventForm from "./EventForm";
+import EventCreateForm from "./EventCreateForm";
+import EventViewForm from "./EventViewForm";
 
 class Calendar extends Component {
   constructor(props) {
@@ -10,7 +11,9 @@ class Calendar extends Component {
       calendarEvents: [],
       selectedDate: null,
       currentMonthDate: props.date,
-      showEventForm: false,
+      showCreateEvent: false,
+      showViewEvent: false,
+      selectedEvent: { title: null, date: null },
     };
   }
 
@@ -34,12 +37,21 @@ class Calendar extends Component {
       .catch((err) => alert(err));
   };
 
-  clickDay = (e, date) => {
-    this.setState({ selectedDate: date, showEventForm: true });
+  openCreateEventForm = (date) => {
+    this.setState({ selectedDate: date, showCreateEvent: true });
   };
 
-  closeEventForm = () => {
-    this.setState({ showEventForm: false });
+  closeCreateEventForm = () => {
+    this.setState({ showCreateEvent: false });
+  };
+
+  openViewEventForm = (jsEvent, event) => {
+    jsEvent.stopPropagation();
+    this.setState({ selectedEvent: event, showViewEvent: true });
+  };
+
+  closeViewEventForm = () => {
+    this.setState({ showViewEvent: false });
   };
 
   createEvent = (title) => {
@@ -117,7 +129,10 @@ class Calendar extends Component {
       for (let i = 0; i < this.state.calendarEvents.titles.length; i++) {
         for (let j = 0; j < dates.length; j++) {
           if (this.isSameDay(dates[j], this.state.calendarEvents.dates[i])) {
-            dateEvents.get(dates[j]).push(this.state.calendarEvents.titles[i]);
+            dateEvents.get(dates[j]).push({
+              title: this.state.calendarEvents.titles[i],
+              date: this.state.calendarEvents.dates[i],
+            });
           }
         }
       }
@@ -158,11 +173,17 @@ class Calendar extends Component {
           Next Month
         </button>
 
-        <EventForm
+        <EventCreateForm
           createEvent={this.createEvent}
-          show={this.state.showEventForm}
-          handleShow={this.clickDay}
-          handleClose={this.closeEventForm}
+          show={this.state.showCreateEvent}
+          handleShow={this.openCreateEventForm}
+          handleClose={this.closeCreateEventForm}
+        />
+
+        <EventViewForm
+          show={this.state.showViewEvent}
+          handleClose={this.closeViewEventForm}
+          event={this.state.selectedEvent}
         />
 
         <div class="row">
@@ -177,7 +198,8 @@ class Calendar extends Component {
               return (
                 <CalendarBox
                   date={dates[start]}
-                  clickHandler={this.clickDay}
+                  boxClickHandler={this.openCreateEventForm}
+                  eventClickHandler={this.openViewEventForm}
                   events={eventMap.get(dates[start])}
                 />
               );
