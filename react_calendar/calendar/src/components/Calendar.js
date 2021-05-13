@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Button, Row } from "react-bootstrap";
 import axios from "axios";
 import CalendarBox from "./CalendarBox";
 import EventCreateForm from "./EventCreateForm";
@@ -161,17 +162,16 @@ class Calendar extends Component {
     });
     return (
       <div>
-        <h1>Calendar</h1>
         <h2>{monthText}</h2>
-        <button type="button" class="btn btn-primary" onClick={this.prevMonth}>
+        <Button variant="primary" onClick={this.prevMonth}>
           Previous Month
-        </button>
-        <button type="button" class="btn btn-secondary" onClick={this.deleteEvents}>
+        </Button>
+        <Button variant="secondary" onClick={this.deleteEvents}>
           Delete Events
-        </button>
-        <button type="button" class="btn btn-primary" onClick={this.nextMonth}>
+        </Button>
+        <Button variant="primary" onClick={this.nextMonth}>
           Next Month
-        </button>
+        </Button>
 
         <EventCreateForm
           createEvent={this.createEvent}
@@ -186,13 +186,13 @@ class Calendar extends Component {
           event={this.state.selectedEvent}
         />
 
-        <div class="row">
+        <Row className="flex-nowrap">
           {days.map((d) => (
             <div class="col">{d}</div>
           ))}
-        </div>
+        </Row>
         {rows.map((r) => (
-          <div class="row flex-nowrap">
+          <Row className="flex-nowrap">
             {dayNumbers.map((n) => {
               ++start;
               return (
@@ -204,7 +204,7 @@ class Calendar extends Component {
                 />
               );
             })}
-          </div>
+          </Row>
         ))}
       </div>
     );
