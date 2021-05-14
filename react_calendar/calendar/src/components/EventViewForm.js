@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EventViewForm = ({ event, show, handleClose, handleDelete, handleEdit }) => {
   return (
-    <div>
+    <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Event Details</Modal.Title>
@@ -38,7 +38,7 @@ const EventViewForm = ({ event, show, handleClose, handleDelete, handleEdit }) =
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </>
   );
 };
 

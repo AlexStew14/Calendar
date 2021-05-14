@@ -32,7 +32,7 @@ class EventCreateForm extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <Modal show={this.props.show} onHide={this.props.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Create Event</Modal.Title>
@@ -67,7 +67,7 @@ class EventCreateForm extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-      </div>
+      </>
     );
   }
 }

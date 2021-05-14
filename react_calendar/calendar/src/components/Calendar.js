@@ -214,7 +214,7 @@ class Calendar extends Component {
       year: "numeric",
     });
     return (
-      <div>
+      <>
         <h2>{monthText}</h2>
         <Button variant="primary" onClick={this.prevMonth}>
           Previous Month
@@ -250,11 +250,13 @@ class Calendar extends Component {
 
         <Row className="flex-nowrap">
           {days.map((d) => (
-            <div class="col">{d}</div>
+            <div key={d} className="col">
+              {d}
+            </div>
           ))}
         </Row>
         {rows.map((r) => (
-          <Row className="flex-nowrap">
+          <Row className="flex-nowrap" key={r}>
             {dayNumbers.map((n) => {
               ++start;
               return (
@@ -263,12 +265,13 @@ class Calendar extends Component {
                   boxClickHandler={this.openCreateEventForm}
                   eventClickHandler={this.openViewEventForm}
                   events={eventMap.get(dates[start])}
+                  key={dates[start]}
                 />
               );
             })}
           </Row>
         ))}
-      </div>
+      </>
     );
   }
 }
