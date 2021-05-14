@@ -41,13 +41,11 @@ router.post("/calendar/edit", (req, res, next) => {
   if (req.body.newTitle && req.body.oldTitle) {
     CalendarEvent.updateOne(
       {
-        date: req.body.oldDate,
         title: req.body.oldTitle,
         startTime: req.body.oldStartTime,
         endTime: req.body.oldEndTime,
       },
       {
-        date: req.body.newDate,
         title: req.body.newTitle,
         startTime: req.body.newStartTime,
         endTime: req.body.newEndTime,

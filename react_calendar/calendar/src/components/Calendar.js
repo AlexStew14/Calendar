@@ -4,6 +4,7 @@ import axios from "axios";
 import CalendarBox from "./CalendarBox";
 import EventCreateForm from "./EventCreateForm";
 import EventViewForm from "./EventViewForm";
+import EventEditForm from "./EventEditForm";
 
 class Calendar extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class Calendar extends Component {
       currentMonthDate: props.date,
       showCreateEvent: false,
       showViewEvent: false,
+      showEditEvent: false,
       selectedEvent: { title: null, date: new Date(), startTime: new Date(), endTime: new Date() },
     };
   }
@@ -57,6 +59,14 @@ class Calendar extends Component {
     this.setState({ showViewEvent: false });
   };
 
+  openEditEventForm = () => {
+    this.setState({ showEditEvent: true, showViewEvent: false });
+  };
+
+  closeEditEventForm = () => {
+    this.setState({ showEditEvent: false });
+  };
+
   createEvent = (title, startTime, endTime) => {
     const data = {
       title: title,
@@ -87,15 +97,14 @@ class Calendar extends Component {
 
   editEvent = (oldEvent, newEvent) => {
     const data = {
-      title: newEvent.title,
-      date: newEvent.date,
-      startTime: newEvent.startTime,
-      endTime: newEvent.endTime,
+      newTitle: newEvent.title,
+      newStartTime: this.createEventFromTime(newEvent.startTime),
+      newEndTime: this.createEventFromTime(newEvent.endTime),
       oldTitle: oldEvent.title,
-      oldDate: oldEvent.title,
       oldStartTime: oldEvent.startTime,
       oldEndTime: oldEvent.endTime,
     };
+    alert(data.oldStartTime);
     axios.post("/api/calendar/edit", data).catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
@@ -228,6 +237,14 @@ class Calendar extends Component {
           show={this.state.showViewEvent}
           handleClose={this.closeViewEventForm}
           handleDelete={this.deleteEvent}
+          handleEdit={this.openEditEventForm}
+          event={this.state.selectedEvent}
+        />
+
+        <EventEditForm
+          show={this.state.showEditEvent}
+          handleClose={this.closeEditEventForm}
+          editEvent={this.editEvent}
           event={this.state.selectedEvent}
         />
 
