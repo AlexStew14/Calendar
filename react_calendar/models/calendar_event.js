@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const CalendarEventSchema = new Schema({
   title: String,
+  startTime: Date,
+  endTime: Date,
   date: Date,
 });
 

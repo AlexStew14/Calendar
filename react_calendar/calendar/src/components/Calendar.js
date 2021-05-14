@@ -10,11 +10,11 @@ class Calendar extends Component {
     super(props);
     this.state = {
       calendarEvents: [],
-      selectedDate: null,
+      selectedDate: new Date(),
       currentMonthDate: props.date,
       showCreateEvent: false,
       showViewEvent: false,
-      selectedEvent: { title: null, date: null },
+      selectedEvent: { title: null, date: new Date(), startTime: new Date(), endTime: new Date() },
     };
   }
 
@@ -31,6 +31,8 @@ class Calendar extends Component {
             calendarEvents: {
               titles: res.data.map((d) => d.title),
               dates: res.data.map((d) => new Date(d.date)),
+              startTimes: res.data.map((d) => new Date(d.startTime)),
+              endTimes: res.data.map((d) => new Date(d.endTime)),
             },
           });
         }
@@ -55,18 +57,58 @@ class Calendar extends Component {
     this.setState({ showViewEvent: false });
   };
 
-  createEvent = (title) => {
+  createEvent = (title, startTime, endTime) => {
     const data = {
       title: title,
       date: this.state.selectedDate,
+      startTime: this.createEventFromTime(startTime),
+      endTime: this.createEventFromTime(endTime),
     };
     axios.post("/api/calendar/create", data).catch((err) => console.log(err));
+    this.getCalendarBoxes();
+  };
+
+  deleteEvent = (event) => {
+    this.closeViewEventForm();
+    const data = {
+      title: event.title,
+      date: event.date,
+      startTime: event.startTime,
+      endTime: event.endTime,
+    };
+    axios.post("/api/calendar/delete", data).catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
   deleteEvents = () => {
     axios.post("/api/calendar/delete").catch((err) => console.log(err));
     this.getCalendarBoxes();
+  };
+
+  editEvent = (oldEvent, newEvent) => {
+    const data = {
+      title: newEvent.title,
+      date: newEvent.date,
+      startTime: newEvent.startTime,
+      endTime: newEvent.endTime,
+      oldTitle: oldEvent.title,
+      oldDate: oldEvent.title,
+      oldStartTime: oldEvent.startTime,
+      oldEndTime: oldEvent.endTime,
+    };
+    axios.post("/api/calendar/edit", data).catch((err) => console.log(err));
+    this.getCalendarBoxes();
+  };
+
+  createEventFromTime = (eventTime) => {
+    let timeDate = new Date("2000-01-01T" + eventTime);
+    return new Date(
+      this.state.selectedDate.getFullYear(),
+      this.state.selectedDate.getMonth(),
+      this.state.selectedDate.getDate(),
+      timeDate.getHours(),
+      timeDate.getMinutes()
+    );
   };
 
   nextMonth = () => {
@@ -133,6 +175,8 @@ class Calendar extends Component {
             dateEvents.get(dates[j]).push({
               title: this.state.calendarEvents.titles[i],
               date: this.state.calendarEvents.dates[i],
+              startTime: this.state.calendarEvents.startTimes[i],
+              endTime: this.state.calendarEvents.endTimes[i],
             });
           }
         }
@@ -183,6 +227,7 @@ class Calendar extends Component {
         <EventViewForm
           show={this.state.showViewEvent}
           handleClose={this.closeViewEventForm}
+          handleDelete={this.deleteEvent}
           event={this.state.selectedEvent}
         />
 

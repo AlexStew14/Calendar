@@ -6,17 +6,27 @@ class EventCreateForm extends Component {
     super(props);
     this.state = {
       title: "",
+      startTime: new Date(),
+      endTime: new Date(),
     };
   }
 
-  handleChange = (event) => {
+  handleTitleChange = (event) => {
     this.setState({ title: event.target.value });
+  };
+
+  handleStartTimeChange = (time) => {
+    this.setState({ startTime: time.target.value });
+  };
+
+  handleEndTimeChange = (time) => {
+    this.setState({ endTime: time.target.value });
   };
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.createEvent(this.state.title);
-    this.setState({ title: "" });
+    this.props.createEvent(this.state.title, this.state.startTime, this.state.endTime);
+    this.setState({ title: "", startTime: new Date(), endTime: new Date() });
     this.props.handleClose();
   };
 
@@ -25,7 +35,7 @@ class EventCreateForm extends Component {
       <div>
         <Modal show={this.props.show} onHide={this.props.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal Heading</Modal.Title>
+            <Modal.Title>Create Event</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={this.handleSubmit}>
@@ -35,8 +45,16 @@ class EventCreateForm extends Component {
                   type="text"
                   value={this.state.title}
                   placeholder="Enter event title"
-                  onChange={this.handleChange}
+                  onChange={this.handleTitleChange}
                 />
+              </Form.Group>
+              <Form.Group controlId="eventStartTime">
+                <Form.Label>Event start time</Form.Label>
+                <Form.Control type="time" onChange={this.handleStartTimeChange} />
+              </Form.Group>
+              <Form.Group controlId="eventEndTime">
+                <Form.Label>Event end time</Form.Label>
+                <Form.Control type="time" onChange={this.handleEndTimeChange} />
               </Form.Group>
             </Form>
           </Modal.Body>
