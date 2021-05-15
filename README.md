@@ -8,7 +8,7 @@ This repository is my first foray into the MERN stack coming from ASP.NET Core a
   
  ## Tech Stack
   -Node.js on the back end handling startup and managing middleware.  
-  -Express used for API routing.
+  -Express used for API routing.  
   -MongoDB for storing and modifying events through the Express API.  
   -React for the frontend logic including conditional rendering and connecting to the Express API.  
 
