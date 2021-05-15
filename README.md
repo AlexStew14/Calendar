@@ -11,3 +11,9 @@ This repository is my first foray into the MERN stack coming from ASP.NET Core a
   -Express used for API routing.
   -MongoDB for storing and modifying events through the Express API.  
   -React for the frontend logic including conditional rendering and connecting to the Express API.  
+
+
+![Main View](https://github.com/AlexStew14/Calendar/blob/main/GitHub%20Images/main_view.PNG)
+![Previous Month](https://github.com/AlexStew14/Calendar/blob/main/GitHub%20Images/previous_month.PNG)
+![Create Event](https://github.com/AlexStew14/Calendar/blob/main/GitHub%20Images/create_event.PNG)
+![View Event](https://github.com/AlexStew14/Calendar/blob/main/GitHub%20Images/view_event.PNG)
