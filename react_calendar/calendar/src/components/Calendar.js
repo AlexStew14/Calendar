@@ -71,45 +71,44 @@ class Calendar extends Component {
     const data = {
       title: title,
       date: this.state.selectedDate,
-      startTime: this.createEventFromTime(startTime),
-      endTime: this.createEventFromTime(endTime),
+      startTime: this.convertTimeToDate(startTime),
+      endTime: this.convertTimeToDate(endTime),
     };
     axios.post("/api/calendar/create", data).catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
-  deleteEvent = (event) => {
+  deleteEvent = () => {
     this.closeViewEventForm();
     const data = {
-      title: event.title,
-      date: event.date,
-      startTime: event.startTime,
-      endTime: event.endTime,
+      title: this.state.selectedEvent.title,
+      date: this.state.selectedEvent.date,
+      startTime: this.state.selectedEvent.startTime,
+      endTime: this.state.selectedEvent.endTime,
     };
-    axios.post("/api/calendar/delete", data).catch((err) => console.log(err));
+    axios.post("/api/calendar/delete_one", data).catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
   deleteEvents = () => {
-    axios.post("/api/calendar/delete").catch((err) => console.log(err));
+    axios.post("/api/calendar/delete_all").catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
   editEvent = (oldEvent, newEvent) => {
     const data = {
       newTitle: newEvent.title,
-      newStartTime: this.createEventFromTime(newEvent.startTime),
-      newEndTime: this.createEventFromTime(newEvent.endTime),
+      newStartTime: this.convertTimeToDate(newEvent.startTime),
+      newEndTime: this.convertTimeToDate(newEvent.endTime),
       oldTitle: oldEvent.title,
       oldStartTime: oldEvent.startTime,
       oldEndTime: oldEvent.endTime,
     };
-    alert(data.oldStartTime);
     axios.post("/api/calendar/edit", data).catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
-  createEventFromTime = (eventTime) => {
+  convertTimeToDate = (eventTime) => {
     let timeDate = new Date("2000-01-01T" + eventTime);
     return new Date(
       this.state.selectedDate.getFullYear(),

@@ -20,7 +20,13 @@ router.post("/calendar/create", (req, res, next) => {
   }
 });
 
-router.post("/calendar/delete", (req, res, next) => {
+router.post("/calendar/delete_all", (req, res, next) => {
+  CalendarEvent.deleteMany({})
+    .then((data) => res.json(data))
+    .catch(next);
+});
+
+router.post("/calendar/delete_one", (req, res, next) => {
   if (req.body.title && req.body.date && req.body.startTime && req.body.endTime) {
     CalendarEvent.deleteOne({
       date: req.body.date,
@@ -31,9 +37,9 @@ router.post("/calendar/delete", (req, res, next) => {
       .then((data) => res.json(data))
       .catch(next);
   } else {
-    CalendarEvent.deleteMany({})
-      .then((data) => res.json(data))
-      .catch(next);
+    res.json({
+      error: "Invalid parameters to delete_one",
+    });
   }
 });
 

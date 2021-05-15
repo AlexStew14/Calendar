@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 class EventEditForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newTitle: props.event.title,
-      newStartTime: props.event.startTime,
-      newEndTime: props.event.endTime,
+      newTitle: "",
+      newStartTime: null,
+      newEndTime: null,
+      invalidInput: false,
     };
   }
 
@@ -24,6 +25,10 @@ class EventEditForm extends Component {
   };
 
   handleSubmit = (event) => {
+    if (!this.validateForm()) {
+      this.setState({ invalidInput: true });
+      return;
+    }
     event.preventDefault();
     const newEvent = {
       title: this.state.newTitle,
@@ -31,14 +36,33 @@ class EventEditForm extends Component {
       endTime: this.state.newEndTime,
     };
 
+    this.resetState();
     this.props.editEvent(this.props.event, newEvent);
     this.props.handleClose();
+  };
+
+  handleClose = () => {
+    this.resetState();
+    this.props.handleClose();
+  };
+
+  validateForm = () => {
+    return this.state.newTitle && this.state.newStartTime && this.state.newEndTime;
+  };
+
+  resetState = () => {
+    this.setState({
+      newTitle: "",
+      newStartTime: null,
+      newEndTime: null,
+      invalidInput: false,
+    });
   };
 
   render() {
     return (
       <>
-        <Modal show={this.props.show} onHide={this.props.handleClose}>
+        <Modal show={this.props.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Event</Modal.Title>
           </Modal.Header>
@@ -48,7 +72,7 @@ class EventEditForm extends Component {
                 <Form.Label>Event title</Form.Label>
                 <Form.Control
                   type="text"
-                  value={this.props.event.title}
+                  value={this.state.newTitle}
                   placeholder="Enter event title"
                   onChange={this.handleTitleChange}
                 />
@@ -63,8 +87,9 @@ class EventEditForm extends Component {
               </Form.Group>
             </Form>
           </Modal.Body>
+          {this.state.invalidInput && <Alert variant="danger">Invalid Input</Alert>}
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.handleClose}>
+            <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
             <Button variant="primary" type="submit" onClick={this.handleSubmit}>

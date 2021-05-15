@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 class EventCreateForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: "",
-      startTime: new Date(),
-      endTime: new Date(),
+      startTime: null,
+      endTime: null,
+      invalidInput: false,
     };
   }
 
@@ -24,16 +25,30 @@ class EventCreateForm extends Component {
   };
 
   handleSubmit = (event) => {
+    if (!this.validateForm()) {
+      this.setState({ invalidInput: true });
+      return;
+    }
+    this.setState({ invalidInput: false });
     event.preventDefault();
     this.props.createEvent(this.state.title, this.state.startTime, this.state.endTime);
     this.setState({ title: "", startTime: new Date(), endTime: new Date() });
     this.props.handleClose();
   };
 
+  handleClose = () => {
+    this.setState({ invalidInput: false });
+    this.props.handleClose();
+  };
+
+  validateForm = () => {
+    return this.state.title && this.state.startTime && this.state.endTime;
+  };
+
   render() {
     return (
       <>
-        <Modal show={this.props.show} onHide={this.props.handleClose}>
+        <Modal show={this.props.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Create Event</Modal.Title>
           </Modal.Header>
@@ -58,8 +73,9 @@ class EventCreateForm extends Component {
               </Form.Group>
             </Form>
           </Modal.Body>
+          {this.state.invalidInput && <Alert variant="danger">Invalid Input</Alert>}
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.handleClose}>
+            <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
             <Button variant="primary" type="submit" onClick={this.handleSubmit}>
