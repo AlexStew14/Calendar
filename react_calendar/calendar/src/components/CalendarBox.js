@@ -10,7 +10,7 @@ const CalendarBox = ({ date, events, boxClickHandler, eventClickHandler }) => {
           {events.map((e) => {
             return (
               <div>
-                <Button variant="link" onClick={(jsEvent) => eventClickHandler(jsEvent, e)}>
+                <Button key={e} variant="link" onClick={(jsEvent) => eventClickHandler(jsEvent, e)}>
                   {e.title}
                 </Button>
               </div>

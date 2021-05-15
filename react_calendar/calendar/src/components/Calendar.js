@@ -6,6 +6,9 @@ import EventCreateForm from "./EventCreateForm";
 import EventViewForm from "./EventViewForm";
 import EventEditForm from "./EventEditForm";
 
+/**
+ * This class encapsulates all the logic for the calendar.
+ */
 class Calendar extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +27,9 @@ class Calendar extends Component {
     this.getCalendarBoxes();
   }
 
+  /**
+   * Load calendar information from the calendar api.
+   */
   getCalendarBoxes = () => {
     axios
       .get("/api/calendar")
@@ -42,31 +48,65 @@ class Calendar extends Component {
       .catch((err) => alert(err));
   };
 
+  /**
+   * Open the Modal for creating a calendar event.
+   * Called from CalendarBox.
+   */
   openCreateEventForm = (date) => {
     this.setState({ selectedDate: date, showCreateEvent: true });
   };
 
+  /**
+   * Close the Modal for creating a calendar event.
+   * Called from EventCreateForm.
+   */
   closeCreateEventForm = () => {
     this.setState({ showCreateEvent: false });
   };
 
+  /**
+   * Open the Modal for viewing a calendar event.
+   * Called from CalendarBox.
+   * @param {The event passed by javascript} jsEvent
+   * @param {The calendar event selected for the View Modal} event
+   */
   openViewEventForm = (jsEvent, event) => {
+    // Prevent the click event on the calendar box from triggering.
     jsEvent.stopPropagation();
     this.setState({ selectedEvent: event, showViewEvent: true });
   };
 
+  /**
+   * Close the Modal for viewing a calendar event.
+   * Called from EventViewForm.
+   */
   closeViewEventForm = () => {
     this.setState({ showViewEvent: false });
   };
 
+  /**
+   * Open the Modal for editing a calendar event.
+   * Called from EventViewForm
+   */
   openEditEventForm = () => {
     this.setState({ showEditEvent: true, showViewEvent: false });
   };
 
+  /**
+   * Close the Modal for editing a calendar event.
+   *
+   */
   closeEditEventForm = () => {
     this.setState({ showEditEvent: false });
   };
 
+  /**
+   * Use the calendar api to create a new calendar event on the database.
+   * Called from EventCreateForm.
+   * @param {Calendar event name} title
+   * @param {Calendar event begin time} startTime
+   * @param {Calendar event end time} endTime
+   */
   createEvent = (title, startTime, endTime) => {
     const data = {
       title: title,
@@ -78,6 +118,10 @@ class Calendar extends Component {
     this.getCalendarBoxes();
   };
 
+  /**
+   * Use the calendar api to delete a calendar event from the database.
+   * Called from EventViewFrom.
+   */
   deleteEvent = () => {
     this.closeViewEventForm();
     const data = {
@@ -90,11 +134,21 @@ class Calendar extends Component {
     this.getCalendarBoxes();
   };
 
+  /**
+   * Use the calendar api to delete all the calendar events from the database.
+   * Useful for testing delete functionality.
+   */
   deleteEvents = () => {
     axios.post("/api/calendar/delete_all").catch((err) => console.log(err));
     this.getCalendarBoxes();
   };
 
+  /**
+   * Use the calendar api to edit a specified calendar event.
+   * Called from the EventEditForm.
+   * @param {The calendar event to be updated} oldEvent
+   * @param {The calendar event information to replace the old event} newEvent
+   */
   editEvent = (oldEvent, newEvent) => {
     const data = {
       newTitle: newEvent.title,
@@ -108,6 +162,13 @@ class Calendar extends Component {
     this.getCalendarBoxes();
   };
 
+  /**
+   * Converts a time string like "11:25" to a date
+   * on the same day as the state.selectedDate at the hour
+   * and minutes from the time string.
+   * @param {Time string for the event hours and minutes} eventTime
+   * @returns A date on the selected date with the provided time.
+   */
   convertTimeToDate = (eventTime) => {
     let timeDate = new Date("2000-01-01T" + eventTime);
     return new Date(
@@ -119,6 +180,10 @@ class Calendar extends Component {
     );
   };
 
+  /**
+   * Move the calendar to the next month.
+   * This effects getDatesForPage.
+   */
   nextMonth = () => {
     this.setState((state) => ({
       currentMonthDate: new Date(
@@ -129,6 +194,10 @@ class Calendar extends Component {
     }));
   };
 
+  /**
+   * Move the calendar to the previous month.
+   * This effects getDatesForPage.
+   */
   prevMonth = () => {
     this.setState((state) => ({
       currentMonthDate: new Date(
@@ -139,6 +208,10 @@ class Calendar extends Component {
     }));
   };
 
+  /**
+   * Gets the dates for the current calendar page based on state.currentMonthDate.
+   * @returns List of days for the current calendar page
+   */
   getDatesForPage = () => {
     let now = this.state.currentMonthDate;
     let days = [];
@@ -168,6 +241,11 @@ class Calendar extends Component {
     return days;
   };
 
+  /**
+   * Maps calendar events to each date on the calendar view.
+   * @param {List of dates for the current calendar page} dates
+   * @returns JS Map of dates as keys to lists of calendar events.
+   */
   mapEventsToDates = (dates) => {
     let dateEvents = new Map();
     for (let i = 0; i < dates.length; i++) {
@@ -193,6 +271,12 @@ class Calendar extends Component {
     }
   };
 
+  /**
+   * Checks if two dates happen on the same day.
+   * @param {First date to compare} d1
+   * @param {Second date to compare} d2
+   * @returns
+   */
   isSameDay = (d1, d2) => {
     return (
       d1.getFullYear() === d2.getFullYear() &&
